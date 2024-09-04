@@ -8,3 +8,28 @@ on:
 jobs:
   version-bump:
     runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20" # Adjust the Node.js version as needed
+
+      - name: Run version bump script
+        run: ./bump-version.sh
+        shell: bash
+
+      - name: Commit version bump
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add package.json package-lock.json
+          git commit -m "chore: bump version to $(grep -oP '"version":\s*"\K[0-9.]+' package.json)"
+          git tag "v$(grep -oP '"version":\s*"\K[0-9.]+' package.json)"
+
+      - name: Push changes
+        run: |
+          git push origin master --follow-tags
