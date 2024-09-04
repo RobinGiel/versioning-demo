@@ -29,8 +29,10 @@ echo "Bumped version to $NEW_VERSION"
 
 
 # Commit the changes and create a git tag
+git config user.name "Robin Giel"
+git config user.email "robingiel@gmail.com"
 git add "./*package.json" package-lock.json
-git commit -m "build: bump version to $NEW_VERSION [skip ci]"
+git commit -m "build: bump version to $NEW_VERSION 🚀"
 git tag "$NEW_VERSION"
 git push
 git push --tags
