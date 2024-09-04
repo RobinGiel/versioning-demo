@@ -18,6 +18,7 @@ jobs:
         shell: bash
 
       - name: Run version bump script
+        id: bump_version
         run: ./scripts/bump-version.sh
         shell: bash
 

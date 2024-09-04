@@ -27,4 +27,4 @@ sed -i "s/\"version\": \"$VERSION\"/\"version\": \"$NEW_VERSION\"/" package-lock
 echo "Bumped version to $NEW_VERSION"
 
 # Set the new version as an output variable
-echo "::set-output name=new_version::$NEW_VERSION"
+echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
