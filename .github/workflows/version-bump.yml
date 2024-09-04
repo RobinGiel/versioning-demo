@@ -1,0 +1,10 @@
+name: Version Bump
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  version-bump:
+    runs-on: ubuntu-latest
