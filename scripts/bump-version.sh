@@ -8,22 +8,25 @@ if ! [[ ${BRANCH} =~ ^master ]]; then
   exit 1
 fi
 
-# Ensure a valid version bump type is provided
-USAGE="Usage: scripts/bump-version.sh [major | minor | patch]"
+# Get the current version from package.json
+VERSION=$(grep -oP '"version":\s*"\K[0-9.]+' package.json)
 
-if [ "$1" != "major" ] && [ "$1" != "minor" ] && [ "$1" != "patch" ]; then
-  echo "Version is invalid."
-  echo $USAGE
-  exit 1
-fi
+# Split version into an array
+IFS='.' read -r -a VERSION_PARTS <<< "$VERSION"
 
-# Bump the version in package.json and package-lock.json
-NEW_VERSION=$(npm version $1 --no-git-tag-version | sed -n 2p | cut -c2-)
+# Increment the patch version
+NEW_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.$((VERSION_PARTS[2] + 1))"
 
-if [ -z $NEW_VERSION ]; then
-  echo "Version bump failed."
-  exit 1
-fi
+# Replace the version in package.json
+sed -i "s/\"version\": \"$VERSION\"/\"version\": \"$NEW_VERSION\"/" package.json
+
+# Replace the version in package-lock.json
+sed -i "s/\"version\": \"$VERSION\"/\"version\": \"$NEW_VERSION\"/" package-lock.json
+
+# Print the new version
+echo "Bumped version to $NEW_VERSION"
+
+
 
 # Commit the changes and create a git tag
 git add "./*package.json" package-lock.json

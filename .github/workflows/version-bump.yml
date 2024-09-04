@@ -21,10 +21,11 @@ jobs:
       - name: Run version bump script
         run: |
           chmod +x ./scripts/bump-version.sh
-          ./scripts/bump-version.sh patch
         shell: bash
 
       - name: Push changes
         run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
           git push
           git push --tags
