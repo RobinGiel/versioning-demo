@@ -13,14 +13,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "20"
+      - name: Make bump-version.sh executable
+        run: chmod +x ./scripts/bump-version.sh
+        shell: bash
 
       - name: Run version bump script
-        run: |
-          chmod +x ./scripts/bump-version.sh
+        run: ./scripts/bump-version.sh
         shell: bash
 
       - name: Push changes
