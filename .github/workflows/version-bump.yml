@@ -19,7 +19,7 @@ jobs:
           node-version: "20" # Adjust the Node.js version as needed
 
       - name: Run version bump script
-        run: ./scripts/bump-version.sh
+        run: chmod +x ./scripts/bump-version.sh
         shell: bash
 
       - name: Commit version bump
