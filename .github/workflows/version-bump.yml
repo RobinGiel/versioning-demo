@@ -21,7 +21,7 @@ jobs:
       - name: Run version bump script
         run: |
           chmod +x ./scripts/bump-version.sh
-          ./scripts/bump-version.sh patch my-app
+          ./scripts/bump-version.sh patch
         shell: bash
 
       - name: Push changes
