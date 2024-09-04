@@ -1,18 +1,33 @@
 #!/bin/bash
 
-# Get the current version from package.json
-VERSION=$(grep -oP '"version":\s*"\K[0-9.]+' package.json)
+# Ensure the script is running on the master branch
+BRANCH=$(git branch --show-current)
 
-# Split version into an array
-IFS='.' read -r -a VERSION_PARTS <<< "$VERSION"
+if ! [[ ${BRANCH} =~ ^master ]]; then
+  echo "Script can only be executed on the master branch."
+  exit 1
+fi
 
-# Increment the patch version
-NEW_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.$((VERSION_PARTS[2] + 1))"
+# Ensure a valid version bump type is provided
+USAGE="Usage: scripts/bump-version.sh [major | minor | patch]"
 
-# Replace the version in package.json
-sed -i "s/\"version\": \"$VERSION\"/\"version\": \"$NEW_VERSION\"/" package.json
+if [ "$1" != "major" ] && [ "$1" != "minor" ] && [ "$1" != "patch" ]; then
+  echo "Version is invalid."
+  echo $USAGE
+  exit 1
+fi
 
-# Regenerate package-lock.json with the new version
-npm install --package-lock-only
+# Bump the version in package.json and package-lock.json
+NEW_VERSION=$(npm version $1 --no-git-tag-version | sed -n 2p | cut -c2-)
 
-echo "Version bumped to $NEW_VERSION"
+if [ -z $NEW_VERSION ]; then
+  echo "Version bump failed."
+  exit 1
+fi
+
+# Commit the changes and create a git tag
+git add "./*package.json" package-lock.json
+git commit -m "build: bump version to $NEW_VERSION [skip ci]"
+git tag "$NEW_VERSION"
+git push
+git push --tags
