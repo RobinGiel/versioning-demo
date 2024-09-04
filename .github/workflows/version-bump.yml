@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Make bump-version.sh executable
         run: chmod +x ./scripts/bump-version.sh
@@ -20,3 +20,13 @@ jobs:
       - name: Run version bump script
         run: ./scripts/bump-version.sh
         shell: bash
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add package.json package-lock.json
+          git commit -m "build: bump version to ${{ steps.bump_version.outputs.new_version }} 🚀"
+          git tag "${{ steps.bump_version.outputs.new_version }}"
+          git push
+          git push --tags

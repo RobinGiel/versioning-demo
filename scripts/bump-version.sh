@@ -26,13 +26,5 @@ sed -i "s/\"version\": \"$VERSION\"/\"version\": \"$NEW_VERSION\"/" package-lock
 # Print the new version
 echo "Bumped version to $NEW_VERSION"
 
-
-
-# Commit the changes and create a git tag
-git config user.name "Robin Giel"
-git config user.email "robingiel@gmail.com"
-git add "./*package.json" package-lock.json
-git commit -m "build: bump version to $NEW_VERSION 🚀"
-git tag "$NEW_VERSION"
-git push
-git push --tags
+# Set the new version as an output variable
+echo "::set-output name=new_version::$NEW_VERSION"
