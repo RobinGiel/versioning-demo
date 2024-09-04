@@ -23,5 +23,7 @@ jobs:
 
       - name: Push changes
         run: |
+          git config --global user.email "robingiel@gmail.com"
+          git config --global user.name "Robin Giel"
           git push
           git push --tags
